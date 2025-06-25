@@ -1,67 +1,94 @@
-def identificar_perfil(respostas):
-    idade = respostas[0].strip()
-    local = respostas[1].strip()
-    linguagem = respostas[2].strip()
-    escolaridade = respostas[3].strip().capitalize()
-    religiao = respostas[4].strip().capitalize()
+import streamlit as st
+import openai
 
-    texto = " ".join(respostas).lower()
-    nacionalidade = "Brasil"
+# Configuração da página
+st.set_page_config(page_title="Chat Personalizado", layout="centered")
 
-    # Definir região + gírias
-    if "rio" in local.lower():
-        regiao = "Sudeste"
-        girias = ["bater um rango", "rolê", "zueira", "trem", "rolê", "rolê"]
-    elif any(p in texto for p in ["abestado","amofinado","azuretado","arretado","migué","fuzuê","cafuringa"]):
-        regiao = "Nordeste"
-        girias = ["abestado","amofinado","azuretado","arretado","migué","fuzuê"]
-    elif any(p in texto for p in ["bah","guri","tchê","tri","tchê"]):
-        regiao = "Sul"
-        girias = ["tri","tchê","guri","bah","lagartear","cacetinho"]
-    elif any(p in texto for p in ["uai","sô","trem"]):
-        regiao = "Centro-Oeste / Minas"
-        girias = ["uai","sô","perrengue","pé-de-boi","bitelo"]
+# Chave da OpenAI
+openai.api_key = "sk-SUA_CHAVE_AQUI"  # Substitua pela sua chave
+
+# Cabeçalho
+st.markdown("""
+<style>
+body { background-color: #f9f9f9; }
+div.stButton > button {
+    background-color: #2563eb;
+    color: white;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("🤖 Chat Amigável e Respeitoso")
+st.markdown("Preencha suas informações abaixo para conversar com uma IA do seu jeitinho!")
+
+# Formulário
+with st.form("formulario"):
+    st.subheader("📝 Suas Informações")
+    idade = st.text_input("1. Quantos anos você tem?", placeholder="Ex: 25")
+    local = st.text_input("2. De onde você é?", placeholder="Ex: Salvador - BA")
+    escolaridade = st.selectbox("3. Qual seu nível de escolaridade?", [
+        "Ensino fundamental", "Ensino médio", "Faculdade", "Mestrado", "Doutorado", "Pós-doutorado"
+    ])
+    religiao = st.text_input("4. Qual é sua religião?", placeholder="Ex: Católica, Evangélica, Espírita...")
+
+    enviar = st.form_submit_button("🔁 Iniciar conversa com a IA")
+
+# Função para detectar região
+def identificar_regiao(local):
+    local = local.lower()
+    if any(p in local for p in ["ceará", "bahia", "pernambuco", "nordeste", "fortaleza", "recife", "salvador"]):
+        return "Nordeste", ["arretado", "migué", "avexado", "visse", "oxente"]
+    elif any(p in local for p in ["rio grande do sul", "santa catarina", "paraná", "sul", "porto alegre", "curitiba"]):
+        return "Sul", ["bah", "tri", "tchê", "lagartear"]
+    elif any(p in local for p in ["rio de janeiro", "são paulo", "espírito santo", "minas", "sudeste", "bh", "campinas"]):
+        return "Sudeste", ["rolê", "padoca", "suave", "zueira", "daora"]
+    elif any(p in local for p in ["goiás", "mato grosso", "brasília", "centro-oeste"]):
+        return "Centro-Oeste", ["uai", "sô", "trem", "bereré"]
+    elif any(p in local for p in ["amazonas", "pará", "roraima", "norte", "belém", "manaus"]):
+        return "Norte", ["égua", "moscou", "gaiato", "de rocha"]
     else:
-        regiao = "Indefinida"
-        girias = []
+        return "Indefinida", []
 
-    estilo = f"Estilo local: use gírias como {', '.join(girias[:5])}..." if girias else "Sem gírias específicas detectadas."
-    return idade, escolaridade, regiao, estilo, girias, nacionalidade, religiao
-
-
+# Prompt personalizado
 def gerar_prompt(idade, escolaridade, regiao, girias, nacionalidade, religiao):
-    prompt = f"""
+    return f"""
 Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo usando as formas de falar do {nacionalidade}.
+
 Você está conversando com uma pessoa que:
-- Tem {idade} anos.
-- Tem o nível de escolaridade: {escolaridade}.
-- É da região: {regiao}.
-- Professa a religião: {religiao}.
-- Usa gírias como: {', '.join(girias) if girias else 'nenhuma gíria específica'}.
+- Tem {idade} anos
+- Tem o nível de escolaridade: {escolaridade}
+- É da região: {regiao}
+- Professa a religião: {religiao}
+- Usa gírias como: {', '.join(girias) if girias else 'nenhuma gíria específica'}
+
 Adapte sua linguagem para refletir a forma de se comunicar da região, com empatia e leveza. Use as gírias de forma natural.
-**Nunca desrespeite crenças, cultura ou costumes da pessoa.** Mantenha um tom positivo, inclusivo e acolhedor. Evite termos técnicos ou linguagem difícil, a não ser que a pessoa solicite.
-Fale como um amigo dessa região, iniciando um papo descontraído com respeito à idade, escolaridade e crenças.
+
+**Nunca desrespeite crenças, cultura ou costumes da pessoa.** Mantenha um tom positivo, inclusivo e acolhedor.
 """
-    return prompt.strip()
 
+# Após envio do formulário
+if enviar:
+    if not idade or not local or not religiao:
+        st.warning("⚠️ Por favor, preencha todos os campos obrigatórios.")
+    else:
+        regiao, girias = identificar_regiao(local)
+        nacionalidade = "Brasil"
+        prompt = gerar_prompt(idade, escolaridade, regiao, girias, nacionalidade, religiao)
 
-# Questionário e execução
-respostas = []
-perguntas = [
-    "1. Quantos anos você tem?",
-    "2. De onde você é? (cidade/região)",
-    "3. Como você costuma falar? (gírias, expressões)",
-    "4. Qual seu nível de escolaridade? (ex: ensino médio, faculdade, mestrado...)",
-    "5. Qual é sua religião?"
-]
-print("Responda com sinceridade:\n")
-for q in perguntas:
-    respostas.append(input(q + "\n> "))
-
-idade, escolaridade, regiao, estilo, girias, nacionalidade, religiao = identificar_perfil(respostas)
-
-print(f"\n🔍 Perfil detectado:\nIdade: {idade}\nEscolaridade: {escolaridade}\nRegião: {regiao}\nReligião: {religiao}\n{estilo}")
-
-prompt = gerar_prompt(idade, escolaridade, regiao, girias, nacionalidade, religiao)
-print("\n📋 Prompt final gerado:\n")
-print(prompt)
+        with st.spinner("💬 Gerando resposta..."):
+            try:
+                resposta = openai.ChatCompletion.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": prompt},
+                        {"role": "user", "content": "Oi! Pode se apresentar :)"}
+                    ]
+                )
+                conteudo = resposta.choices[0].message.content
+                st.success("✅ Conversa iniciada com sucesso!")
+                st.markdown("### 💬 Resposta da IA:")
+                st.markdown(conteudo)
+            except Exception as e:
+                st.error("❌ Erro ao conectar com a OpenAI.")
+                st.code(str(e))
