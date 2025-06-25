@@ -2,7 +2,7 @@
 import streamlit as st
 import openai
 
-openai.api_key = "sk-SUA_CHAVE_AQUI"  # Substitua pela sua chave real da OpenAI
+openai.api_key = "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"  # Substitua pela sua chave real da OpenAI
 
 st.set_page_config(page_title="Chat Personalizado", layout="centered")
 
