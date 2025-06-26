@@ -124,17 +124,19 @@ if submitted:
             st.error(erro)
     else:
         prompt = (
-            f"Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
-            f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}'. "
-            f"Minha opinião sobre IA: {opiniao_ia}. "
-            f"Já usei as seguintes ferramentas de IA: {ferramentas_ia}. "
-            f"Utilizei ou usaria IA nas seguintes situações: {uso_ia}. "
-            f"Frequência de uso: {frequencia_uso}. Autonomia: {autonomia}. "
-            f"Áreas em que vejo potencial de uso: {setores}. "
-            f"Gostaria de aprender mais? {aprendizado}. "
-            f"Dificuldades que enfrento ou imagino: {dificuldades}. "
-            f"Com base nessas informações, me envie uma resposta amigável e clara sobre minha relação com IA."
-        )
+           prompt = (
+    f"Usuário: Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
+    f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}'. "
+    f"Minha opinião sobre IA: {opiniao_ia}. "
+    f"Já usei as seguintes ferramentas de IA: {ferramentas_ia}. "
+    f"Utilizei ou usaria IA nas seguintes situações: {uso_ia}. "
+    f"Frequência de uso: {frequencia_uso}. Autonomia: {autonomia}. "
+    f"Áreas em que vejo potencial de uso: {setores}. "
+    f"Gostaria de aprender mais? {aprendizado}. "
+    f"Dificuldades que enfrento ou imagino: {dificuldades}.\n\n"
+    f"IA: Com base nessas informações, me envie uma resposta amigável e clara sobre minha relação com IA."
+)
+
         nivel_ia = avaliar_nivel_ia(relacao_ia, ferramentas_ia, uso_ia, frequencia_uso, autonomia, setores)
         st.info(f"Nível estimado de familiaridade com IA: **{nivel_ia}%**")
 
