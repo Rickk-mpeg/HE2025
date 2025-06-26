@@ -1,11 +1,13 @@
 
 import streamlit as st
-from openai import OpenAI
+from google import genai
 
-client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+# Configurar API Gemini
+genai.configure(api_key=st.secrets["gemini"]["api_key"])
+model = genai.GenerativeModel("gemini-2.5-flash")
 
-st.set_page_config(page_title="Chat Personalizado", layout="centered")
-st.title("🤖 Chat Amigável e Respeitoso")
+st.set_page_config(page_title="Chat com IA Gemini", layout="centered")
+st.title("🤖 Chat com IA Gemini")
 st.markdown("Preencha suas informações para iniciar a conversa com a IA:")
 
 # Formulário
@@ -43,19 +45,19 @@ def identificar_regiao(local):
 
 # Geração do prompt
 def gerar_prompt(nome, idade, escolaridade, regiao, opiniao, aplicacao, relacao):
-    return f"""Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo.
+    return f"""Aja como uma IA amigável, respeitosa e empática.
 
-A pessoa com quem você vai conversar:
-- Se chama {nome}
-- Tem {idade} anos
-- É da região {regiao}
-- Tem o nível de escolaridade: {escolaridade}
-- Descreveu sua relação com IA como: {relacao}
-- Disse que pensa o seguinte sobre IA: "{opiniao}"
-- Disse que aplicaria IA assim: "{aplicacao}"
+Informações do usuário:
+- Nome: {nome}
+- Idade: {idade}
+- Região: {regiao}
+- Escolaridade: {escolaridade}
+- Relação com IA: {relacao}
+- Opinião sobre IA: {opiniao}
+- Aplicações pretendidas da IA: {aplicacao}
 
-Adapte sua linguagem com empatia e leveza. Nunca desrespeite cultura ou crenças. Mantenha um tom acolhedor.
-"""
+Responda de forma gentil e acolhedora, baseada nas informações fornecidas.
+""".strip()
 
 # Processamento após envio
 if enviar:
@@ -65,19 +67,12 @@ if enviar:
         regiao = identificar_regiao(local)
         prompt = gerar_prompt(nome, idade, escolaridade, regiao, opiniao_ia, aplicacao_ia, relacao_ia)
 
-        with st.spinner("💬 Enviando para o ChatGPT..."):
+        with st.spinner("💬 Enviando para a IA Gemini..."):
             try:
-                resposta = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": prompt},
-                        {"role": "user", "content": "Oi! Pode se apresentar :)"}
-                    ]
-                )
-                conteudo = resposta.choices[0].message.content
+                response = model.generate_content(prompt)
                 st.success("✅ Resposta recebida!")
                 st.markdown("**Resposta da IA:**")
-                st.write(conteudo)
+                st.write(response.text)
             except Exception as e:
                 st.error("❌ Erro ao conversar com a IA.")
                 st.code(str(e))
