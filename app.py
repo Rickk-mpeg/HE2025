@@ -29,22 +29,21 @@ with st.form(key="formulario"):
 def identificar_regiao(local):
     local = local.lower()
     if any(p in local for p in ["ceará", "bahia", "pernambuco", "nordeste", "fortaleza", "recife", "salvador"]):
-        return "Nordeste", ["arretado", "migué", "avexado", "visse", "oxente"]
+        return "Nordeste"
     elif any(p in local for p in ["rio grande do sul", "santa catarina", "paraná", "sul", "porto alegre", "curitiba"]):
-        return "Sul", ["bah", "tri", "tchê", "lagartear"]
+        return "Sul"
     elif any(p in local for p in ["rio de janeiro", "são paulo", "espírito santo", "minas", "sudeste", "bh", "campinas"]):
-        return "Sudeste", ["rolê", "padoca", "suave", "zueira", "daora"]
+        return "Sudeste"
     elif any(p in local for p in ["goiás", "mato grosso", "brasília", "centro-oeste"]):
-        return "Centro-Oeste", ["uai", "sô", "trem", "bereré"]
+        return "Centro-Oeste"
     elif any(p in local for p in ["amazonas", "pará", "roraima", "norte", "belém", "manaus"]):
-        return "Norte", ["égua", "moscou", "gaiato", "de rocha"]
+        return "Norte"
     else:
-        return "Indefinida", []
+        return "Indefinida"
 
 # Geração do prompt
-def gerar_prompt(nome, idade, escolaridade, regiao, girias, opiniao, aplicacao, relacao):
-    return f"""
-Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo.
+def gerar_prompt(nome, idade, escolaridade, regiao, opiniao, aplicacao, relacao):
+    return f"""Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo.
 
 A pessoa com quem você vai conversar:
 - Se chama {nome}
@@ -54,23 +53,22 @@ A pessoa com quem você vai conversar:
 - Descreveu sua relação com IA como: {relacao}
 - Disse que pensa o seguinte sobre IA: "{opiniao}"
 - Disse que aplicaria IA assim: "{aplicacao}"
-- Usa gírias como: {', '.join(girias) if girias else 'nenhuma gíria específica'}
 
-Use um tom adaptado à região da pessoa, com empatia e leveza. Nunca desrespeite cultura ou crenças. Use as gírias com naturalidade e mantenha um tom acolhedor.
-""".strip()
+Adapte sua linguagem com empatia e leveza. Nunca desrespeite cultura ou crenças. Mantenha um tom acolhedor.
+"""
 
 # Processamento após envio
 if enviar:
     if not nome or not idade or not local or not opiniao_ia or not aplicacao_ia:
         st.warning("⚠️ Por favor, preencha todos os campos obrigatórios.")
     else:
-        regiao, girias = identificar_regiao(local)
-        prompt = gerar_prompt(nome, idade, escolaridade, regiao, girias, opiniao_ia, aplicacao_ia, relacao_ia)
+        regiao = identificar_regiao(local)
+        prompt = gerar_prompt(nome, idade, escolaridade, regiao, opiniao_ia, aplicacao_ia, relacao_ia)
 
         with st.spinner("💬 Enviando para o ChatGPT..."):
             try:
                 resposta = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-3.5-turbo",
                     messages=[
                         {"role": "system", "content": prompt},
                         {"role": "user", "content": "Oi! Pode se apresentar :)"}
