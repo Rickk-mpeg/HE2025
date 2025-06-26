@@ -1,20 +1,15 @@
 import streamlit as st
 import requests
 
-# Obter a API Key do arquivo secrets
 api_key = st.secrets["huggingface"]["api_key"]
 
-# Função para chamar a API da Hugging Face
 def gerar_resposta(prompt):
-    url = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
+    url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
     headers = {"Authorization": f"Bearer {api_key}"}
-    payload = {"inputs": prompt}
-
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json={"inputs": prompt})
     if response.status_code == 200:
-        return response.json()[0]["generated_text"]
-    else:
-        return f"Erro: {response.status_code} - {response.text}"
+        return response.json()[0].get("generated_text","")
+    return f"Erro: {response.status_code} – {response.text}"
 
 # Interface Streamlit
 st.set_page_config(page_title="Chat com Hugging Face", layout="centered")
