@@ -1,9 +1,11 @@
-
 import streamlit as st
 import requests
 
+# Obter a API Key do arquivo secrets
+api_key = st.secrets["huggingface"]["api_key"]
+
 # Função para chamar a API da Hugging Face
-def gerar_resposta(prompt, api_key):
+def gerar_resposta(prompt):
     url = "https://api-inference.huggingface.co/models/google/flan-t5-large"
     headers = {"Authorization": f"Bearer {api_key}"}
     payload = {"inputs": prompt}
@@ -36,16 +38,13 @@ with st.form(key="formulario"):
     submitted = st.form_submit_button("Enviar")
 
 if submitted:
- api_key = st.secrets["huggingface"]["api_key"]
-        prompt = (
-            f"Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
-            f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}' "
-            f"e eu penso o seguinte sobre IA: {opiniao_ia}. "
-            f"Com base nisso, me envie uma resposta amigável e clara sobre IA."
-        )
-        with st.spinner("Aguardando resposta da IA..."):
-            resposta = gerar_resposta(prompt, api_key)
-            st.success("Resposta da IA:")
-            st.write(resposta)
-    else:
-        st.warning("Por favor, forneça sua API key da Hugging Face para continuar.")
+    prompt = (
+        f"Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
+        f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}' "
+        f"e eu penso o seguinte sobre IA: {opiniao_ia}. "
+        f"Com base nisso, me envie uma resposta amigável e clara sobre IA."
+    )
+    with st.spinner("Aguardando resposta da IA..."):
+        resposta = gerar_resposta(prompt)
+        st.success("Resposta da IA:")
+        st.write(resposta)
