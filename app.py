@@ -6,7 +6,7 @@ api_key = st.secrets["huggingface"]["api_key"]
 
 # Função para chamar a API da Hugging Face
 def gerar_resposta(prompt):
-    url = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+    url = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"
     headers = {"Authorization": f"Bearer {api_key}"}
     payload = {"inputs": prompt}
 
