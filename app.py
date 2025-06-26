@@ -124,7 +124,6 @@ if submitted:
             st.error(erro)
     else:
         prompt = (
-           prompt = (
     f"Usuário: Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
     f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}'. "
     f"Minha opinião sobre IA: {opiniao_ia}. "
@@ -136,6 +135,7 @@ if submitted:
     f"Dificuldades que enfrento ou imagino: {dificuldades}.\n\n"
     f"IA: Com base nessas informações, me envie uma resposta amigável e clara sobre minha relação com IA."
 )
+
 
         nivel_ia = avaliar_nivel_ia(relacao_ia, ferramentas_ia, uso_ia, frequencia_uso, autonomia, setores)
         st.info(f"Nível estimado de familiaridade com IA: **{nivel_ia}%**")
