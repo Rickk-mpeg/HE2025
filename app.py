@@ -75,15 +75,15 @@ with st.form("formulario"):
     estado = st.text_input("3.1 Estado ou região:")
     cidade = st.text_input("3.2 Cidade:")
     escolaridade = st.selectbox("4. Escolaridade:", ["Ensino fundamental", "Ensino médio", "Faculdade ou outros"])
-    relacao_ia = st.selectbox("5. Relação com IA:", ["Boa", "Não sei muito", "Gosto, mas não sei usar", "Tenho receio", "Nunca usei", "Uso com frequência"])
-    opiniao_ia = st.text_area("6. O que pensa sobre IA?")
-    ferramentas_ia = st.text_area("7. Quais ferramentas já usou?")
-    uso_ia = st.text_area("8. Em que situações usou ou usaria IA?")
-    frequencia_uso = st.selectbox("9. Frequência de uso:", ["Nunca", "Raramente", "Mensalmente", "Semanalmente", "Diariamente"])
-    autonomia = st.selectbox("10. Nível de autonomia com IA:", ["Preciso de ajuda para tudo", "Consigo usar com orientação", "Aprendo com tutoriais", "Sou autodidata e crio soluções"])
+    relacao_ia = st.selectbox("5. Qual é a sua relação com IA:", ["Boa", "Não sei muito", "Gosto, mas não sei usar", "Tenho receio", "Nunca usei", "Uso com frequência"])
+    opiniao_ia = st.text_area("6. O que você pensa sobre IA?")
+    ferramentas_ia = st.text_area("7. Quais ferramentas de IA você já usou?(ChatGPT, Copilot, Gemini, Midjourney, Suno)")
+    uso_ia = st.text_area("8. Em quais situações você já usou ou usaria uma IA?")
+    frequencia_uso = st.selectbox("9. Com que frequência você faz o uso de IA:", ["Nunca", "Raramente", "Mensalmente", "Semanalmente", "Diariamente"])
+    autonomia = st.selectbox("10. Como você se sente usando IA:", ["Preciso de ajuda para tudo", "Consigo usar com orientação", "Aprendo com tutoriais", "Sou autodidata e crio soluções"])
     setores = st.text_area("11. Áreas com potencial para aplicar IA?")
-    aprendizado = st.text_area("12. Como gostaria de aprender mais sobre IA?")
-    dificuldades = st.text_area("13. Dificuldades ou receios com IA?")
+    aprendizado = st.text_area("12. Como Você aprende ou aprendeu a usar IA?")
+    dificuldades = st.text_area("13. quais são as suas dificuldades ou receios ao usar IA?")
     submitted = st.form_submit_button("Enviar")
 
 # --- PROCESSAMENTO ---
@@ -92,11 +92,11 @@ if submitted:
         st.error("Por favor, responda com pelo menos 10 caracteres nas perguntas 6 a 11.")
     else:
         prompt = (
-            f"Meu nome é {nome}, tenho {idade}, sou de {cidade}, {estado}, {pais_nome}. "
-            f"Escolaridade: {escolaridade}. Relação com IA: {relacao_ia}. "
-            f"Opinião: {opiniao_ia}. Ferramentas: {ferramentas_ia}. Uso: {uso_ia}. "
-            f"Frequência: {frequencia_uso}. Autonomia: {autonomia}. Setores: {setores}. "
-            f"Interesse em aprender: {aprendizado}. Dificuldades: {dificuldades}."
+            f"Olá {nome}, bom saber que você tem {idade}, e é de {cidade}, {estado}, {pais_nome}. "
+            f"e que a sua escolaridade é do nível de: {escolaridade}. e que sua relação com IA: {relacao_ia}. "
+            f"e que pensa assim: {opiniao_ia}. Importante saber que você já usou essas ferramentas: {ferramentas_ia} , muito interessante e impressionante, tenho que admitir. Uso: {uso_ia}. "
+            f"Bom saber que você usa com essa frequência: {frequencia_uso}. e que se sente: {autonomia} usando ia. e que trabalha com esse(s) setor(es): {setores}. "
+            f"Muito interessante saber que você aprende: {aprendizado} assim. Uma pena que tneha essas dificuldades: {dificuldades}."
         )
 
         nivel = avaliar_nivel_ia(relacao_ia, ferramentas_ia, uso_ia, frequencia_uso, autonomia, setores, escolaridade)
