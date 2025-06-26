@@ -66,7 +66,7 @@ def avaliar_nivel_ia(relacao_ia, ferramentas_ia, uso_ia, frequencia_uso, autonom
 
 # Interface
 st.set_page_config(page_title="Diagnóstico de IA – RH", layout="centered")
-st.title("📊 Diagnóstico de Familiaridade com Inteligência Artificial")
+st.title("📊PRISCILA AI")
 
 st.markdown("Preencha o formulário abaixo para avaliar seu nível de conhecimento e uso de IA:")
 
