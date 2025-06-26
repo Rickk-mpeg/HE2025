@@ -10,9 +10,9 @@ col1, col2 = st.columns([1, 6])
 with col1:
     st.image("priai.png", width=70)
 with col2:
-    st.title("📊 PRISCILA AI")
+    st.title("PRIscila AI")
 
-st.markdown("Preencha o formulário abaixo para avaliar seu nível de conhecimento e uso de IA:")
+st.markdown("Olá, seja bem vindo ao processo de requalificação industrial! bom saber que você se interessa pelo uso de inteligências artificiais; Responda o questionário a seguir, para sabermos o seu nível de afinidade com a inteligência artificial:")
 
 # --- CHAVE DE API ---
 api_key = st.secrets["huggingface"]["api_key"]
