@@ -11,7 +11,7 @@ api_key = st.secrets["huggingface"]["api_key"]
 
 # --- FUNÇÃO DE REQUISIÇÃO A IA ---
 def gerar_resposta(prompt):
-    url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1"
+    url = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.post(url, headers=headers, json={"inputs": prompt}, timeout=30)
     if response.status_code == 200:
