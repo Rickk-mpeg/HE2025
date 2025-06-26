@@ -4,22 +4,12 @@ import requests
 api_key = st.secrets["huggingface"]["api_key"]
 
 def gerar_resposta(prompt):
-    url = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
+    url = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.post(url, headers=headers, json={"inputs": prompt})
     if response.status_code == 200:
-        try:
-            resultado = response.json()
-            if isinstance(resultado, list):
-                return resultado[0].get("generated_text", "")
-            elif isinstance(resultado, dict):
-                return resultado.get("generated_text", "")
-            else:
-                return "Formato inesperado de resposta da API."
-        except Exception as e:
-            return f"Erro ao interpretar resposta: {e}"
+        return response.json()[0].get("generated_text", "")
     return f"Erro: {response.status_code} – {response.text}"
-
 
 # Função para avaliar o nível do funcionário em relação à IA
 def avaliar_nivel_ia(relacao_ia, ferramentas_ia, uso_ia, frequencia_uso, autonomia, setores):
