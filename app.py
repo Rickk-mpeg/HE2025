@@ -1,10 +1,17 @@
-import streamlit as st
+
+import streamlit as st 
 import requests
 import pycountry
 
 # --- CONFIG ---
 st.set_page_config(page_title="Diagnóstico de IA - RH", layout="centered")
-st.title("📊 PRISCILA AI")
+
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image("priai.png", width=70)
+with col2:
+    st.title("📊 PRISCILA AI")
+
 st.markdown("Preencha o formulário abaixo para avaliar seu nível de conhecimento e uso de IA:")
 
 # --- CHAVE DE API ---
@@ -20,7 +27,6 @@ idiomas_por_pais = {
     "MX": "spanish",
     "FR": "french",
     "DE": "german",
-    # Adicione outros conforme necessário
 }
 
 # --- GERAR RESPOSTA ---
@@ -41,29 +47,21 @@ def gerar_resposta(prompt, idioma="english"):
 # --- AVALIAÇÃO ---
 def avaliar_nivel_ia(relacao, ferramentas, uso, freq, autonomia, setores, escolaridade):
     nota = 0
-
     nota += {
         "Nunca usei": 0, "Tenho receio": 10, "Não sei muito": 20,
         "Gosto, mas não sei usar": 30, "Boa": 60, "Uso com frequência": 80
     }.get(relacao, 0)
-
     nota += min(len([f for f in ferramentas.lower().split(",") if len(f.strip()) >= 3]) * 5, 20)
-
     nota += 20 if len(uso) > 100 else 10 if len(uso) > 50 else 5 if len(uso) > 10 else 0
-
     nota += {
         "Nunca": 0, "Raramente": 5, "Mensalmente": 10, "Semanalmente": 15, "Diariamente": 20
     }.get(freq, 0)
-
     nota += {
         "Preciso de ajuda para tudo": 0, "Consigo usar com orientação": 10,
         "Aprendo com tutoriais": 20, "Sou autodidata e crio soluções": 30
     }.get(autonomia, 0)
-
     nota += min(len([s for s in setores.lower().split(",") if len(s) >= 3]) * 2, 10)
-
     nota += {"Ensino fundamental": 0, "Ensino médio": 10, "Faculdade ou outros": 20}.get(escolaridade, 0)
-
     return min(nota, 100)
 
 # --- PAÍSES ---
@@ -73,14 +71,11 @@ paises = sorted([(c.name, c.alpha_2) for c in pycountry.countries], key=lambda x
 with st.form("formulario"):
     nome = st.text_input("1. Nome completo:")
     idade = st.selectbox("2. Idade:", ["Menos de 18", "18 a 25", "26 a 35", "36 a 45", "46 a 60", "Acima de 60"])
-    
     pais_nome, pais_codigo = st.selectbox("3. País:", paises)
     estado = st.text_input("3.1 Estado ou região:")
     cidade = st.text_input("3.2 Cidade:")
-
     escolaridade = st.selectbox("4. Escolaridade:", ["Ensino fundamental", "Ensino médio", "Faculdade ou outros"])
     relacao_ia = st.selectbox("5. Relação com IA:", ["Boa", "Não sei muito", "Gosto, mas não sei usar", "Tenho receio", "Nunca usei", "Uso com frequência"])
-
     opiniao_ia = st.text_area("6. O que pensa sobre IA?")
     ferramentas_ia = st.text_area("7. Quais ferramentas já usou?")
     uso_ia = st.text_area("8. Em que situações usou ou usaria IA?")
@@ -89,7 +84,6 @@ with st.form("formulario"):
     setores = st.text_area("11. Áreas com potencial para aplicar IA?")
     aprendizado = st.text_area("12. Como gostaria de aprender mais sobre IA?")
     dificuldades = st.text_area("13. Dificuldades ou receios com IA?")
-
     submitted = st.form_submit_button("Enviar")
 
 # --- PROCESSAMENTO ---
