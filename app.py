@@ -36,8 +36,7 @@ with st.form(key="formulario"):
     submitted = st.form_submit_button("Enviar")
 
 if submitted:
-    api_key = st.text_input("🔑 Cole aqui sua Hugging Face API Key", type="password")
-    if api_key:
+ api_key = st.secrets["huggingface"]["api_key"]
         prompt = (
             f"Meu nome é {nome}, tenho {idade} anos, sou de {local}, "
             f"tenho escolaridade de nível {escolaridade}, minha relação com IA é '{relacao_ia}' "
