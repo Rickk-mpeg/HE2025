@@ -2,7 +2,7 @@
 import streamlit as st
 from openai import OpenAI
 
-client = OpenAI(api_key="sua-chave-aqui")
+client = OpenAI(api_key=st.secrets["openai"]["api_key"])
 
 st.set_page_config(page_title="Chat Personalizado", layout="centered")
 st.title("🤖 Chat Amigável e Respeitoso")
