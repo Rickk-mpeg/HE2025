@@ -1,26 +1,31 @@
 
 import streamlit as st
-import openai
+from openai import OpenAI
 
-openai.api_key = "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"  # Substitua pela sua chave real da OpenAI
+client = OpenAI(api_key="sua-chave-aqui")
 
 st.set_page_config(page_title="Chat Personalizado", layout="centered")
-
 st.title("🤖 Chat Amigável e Respeitoso")
 st.markdown("Preencha suas informações para iniciar a conversa com a IA:")
 
 # Formulário
 with st.form(key="formulario"):
-    idade = st.text_input("1. Quantos anos você tem?")
-    local = st.text_input("2. De onde você é? (cidade, estado ou região)")
+    nome = st.text_input("1. Qual o seu nome completo?")
+    idade = st.text_input("2. Qual a sua idade?")
+    local = st.text_input("3. De onde você é? (Cidade, estado ou região)")
     escolaridade = st.selectbox(
-        "3. Qual seu nível de escolaridade?",
+        "4. Qual seu nível de escolaridade?",
         ["Ensino fundamental", "Ensino médio", "Faculdade", "Mestrado", "Doutorado", "Pós-doutorado"]
     )
-    religiao = st.text_input("4. Qual é sua religião?")
+    relacao_ia = st.selectbox(
+        "5. Qual sua relação com as Inteligências Artificiais?",
+        ["Boa", "Não sei muito", "Gosto, mas não sei usar", "Tenho receio", "Nunca usei", "Uso com frequência"]
+    )
+    opiniao_ia = st.text_area("6. O que você pensa sobre as Inteligências Artificiais?")
+    aplicacao_ia = st.text_area("7. Como você aplicaria o uso das Inteligências Artificiais no seu dia a dia ou trabalho?")
     enviar = st.form_submit_button("🔁 Enviar para IA")
 
-# Função de análise
+# Identificação de região
 def identificar_regiao(local):
     local = local.lower()
     if any(p in local for p in ["ceará", "bahia", "pernambuco", "nordeste", "fortaleza", "recife", "salvador"]):
@@ -36,35 +41,35 @@ def identificar_regiao(local):
     else:
         return "Indefinida", []
 
-# Gera o prompt com base nas respostas
-def gerar_prompt(idade, escolaridade, regiao, girias, nacionalidade, religiao):
+# Geração do prompt
+def gerar_prompt(nome, idade, escolaridade, regiao, girias, opiniao, aplicacao, relacao):
     return f"""
-Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo usando as formas de falar do {nacionalidade}.
+Haja como uma IA amigável e respeitosa, como se estivesse falando com um amigo.
 
-Você está conversando com uma pessoa que:
+A pessoa com quem você vai conversar:
+- Se chama {nome}
 - Tem {idade} anos
+- É da região {regiao}
 - Tem o nível de escolaridade: {escolaridade}
-- É da região: {regiao}
-- Professa a religião: {religiao}
+- Descreveu sua relação com IA como: {relacao}
+- Disse que pensa o seguinte sobre IA: "{opiniao}"
+- Disse que aplicaria IA assim: "{aplicacao}"
 - Usa gírias como: {', '.join(girias) if girias else 'nenhuma gíria específica'}
 
-Adapte sua linguagem para refletir a forma de se comunicar da região, com empatia e leveza. Use as gírias de forma natural.
-
-**Nunca desrespeite crenças, cultura ou costumes da pessoa.** Mantenha um tom positivo, inclusivo e acolhedor.
+Use um tom adaptado à região da pessoa, com empatia e leveza. Nunca desrespeite cultura ou crenças. Use as gírias com naturalidade e mantenha um tom acolhedor.
 """.strip()
 
-# Ação ao enviar o formulário
+# Processamento após envio
 if enviar:
-    if not idade or not local or not religiao:
-        st.warning("⚠️ Por favor, preencha todos os campos.")
+    if not nome or not idade or not local or not opiniao_ia or not aplicacao_ia:
+        st.warning("⚠️ Por favor, preencha todos os campos obrigatórios.")
     else:
         regiao, girias = identificar_regiao(local)
-        nacionalidade = "Brasil"
-        prompt = gerar_prompt(idade, escolaridade, regiao, girias, nacionalidade, religiao)
+        prompt = gerar_prompt(nome, idade, escolaridade, regiao, girias, opiniao_ia, aplicacao_ia, relacao_ia)
 
         with st.spinner("💬 Enviando para o ChatGPT..."):
             try:
-                resposta = openai.ChatCompletion.create(
+                resposta = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": prompt},
