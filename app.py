@@ -4,12 +4,16 @@ import requests
 api_key = st.secrets["huggingface"]["api_key"]
 
 def gerar_resposta(prompt):
-    url = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+    url = "https://api-inference.huggingface.co/models/google/flan-t5-small"
     headers = {"Authorization": f"Bearer {api_key}"}
-    response = requests.post(url, headers=headers, json={"inputs": prompt})
-    if response.status_code == 200:
-        return response.json()[0].get("generated_text", "")
-    return f"Erro: {response.status_code} – {response.text}"
+    try:
+        response = requests.post(url, headers=headers, json={"inputs": prompt}, timeout=20)
+        if response.status_code == 200:
+            return response.json()[0].get("generated_text", "")
+        return f"Erro: {response.status_code} – {response.text}"
+    except requests.exceptions.Timeout:
+        return "Erro: Tempo limite atingido. O modelo demorou demais para responder."
+
 
 # Interface Streamlit
 st.set_page_config(page_title="Chat com Hugging Face", layout="centered")
