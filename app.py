@@ -8,7 +8,7 @@ def gerar_resposta(prompt):
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.post(url, headers=headers, json={"inputs": prompt})
     if response.status_code == 200:
-        return response.json()[0].get("generated_text","")
+        return response.json()[0].get("generated_text", "")
     return f"Erro: {response.status_code} – {response.text}"
 
 # Interface Streamlit
